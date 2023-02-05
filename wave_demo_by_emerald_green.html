@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>
+Simple Canvas Demo
+</title>
+<style type="text/css" media="screen">
+    body { padding: 0; margin: 0; }
+    div { padding: 0; margin: 0; }
+</style>
+</head>
+<body>
+<center><canvas id="screen" style="height:100%"></canvas></center>
+<script>
+
+var SWIDTH = 1000;
+var SHEIGHT = 1000;
+
+function getbyid(id) { return document.getElementById(id); }
+
+var c = getbyid("screen");
+c.height = SHEIGHT;
+c.width = SWIDTH;
+//c.style['image-rendering'] = 'pixelated';
+var ctx = c.getContext("2d");
+var imgData=ctx.createImageData(SWIDTH, SHEIGHT);
+var pixels = imgData.data;
+var t = 0;
+
+function draw() {
+    var x, y, fx, fy, red, green, blue, r, phi, cx, cy;
+
+    t += 0.15;
+
+    for (y=0; y<SHEIGHT; y++) {
+        for (x=0; x<SWIDTH; x++) {
+            fx = x/SWIDTH;
+            fy = y/SHEIGHT;
+
+            cx = (fx-0.5+Math.cos(t/20)*0.1);
+            cy = (fy-0.5+Math.cos(t/15)*0.1);
+
+            r = Math.sqrt(cx*cx + cy*cy);
+            phi = Math.atan2(cy, cx);
+
+            red = Math.sin((r+1/(r+0.1))*10-t/5);
+            red = red*red;
+            green = (Math.sin((phi*10)+(Math.sin(r*10)*2)+(t/10))+1)/2;
+            blue = (Math.sin((-phi*20)+(Math.cos(r*10)*2)+(t/10))+1)/2;
+
+            pixels[((y*SWIDTH)+x)*4]   = (red*255); // R?
+            pixels[((y*SWIDTH)+x)*4+1] = (green*255); // G?
+            pixels[((y*SWIDTH)+x)*4+2] = (blue*255); // B?
+            pixels[((y*SWIDTH)+x)*4+3] = 255; // A?
+        }
+    }
+
+    ctx.putImageData(imgData,0,0);
+}
+
+function step() {
+        requestAnimationFrame(step);
+        draw();
+}
+
+step();
+
+</script>
+</body>
+</html>
